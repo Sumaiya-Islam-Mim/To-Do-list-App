@@ -1,12 +1,15 @@
 <?php
-include('db.php');
+include 'db.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['task'])) {
-    $task = $conn->real_escape_string($_POST['task']);
-    $sql = "INSERT INTO tasks (description) VALUES ('$task')";
-    $conn->query($sql);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $task = trim($_POST['task']);
+
+    if (!empty($task)) {
+        $stmt = $conn->prepare("INSERT INTO tasks (task) VALUES (?)");
+        $stmt->bind_param("s", $task);
+        $stmt->execute();
+        $stmt->close();
+    }
 }
-
-header("Location: index.php");
-exit();
 ?>
+
